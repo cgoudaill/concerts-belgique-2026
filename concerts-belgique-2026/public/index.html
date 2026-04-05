@@ -432,23 +432,15 @@ async function discoverConcerts(){
   const q=QUERIES[queryIdx%QUERIES.length]; queryIdx++;
   lbl.textContent='Recherche en cours…';
   try{
-    const res=await fetch('https://api.anthropic.com/v1/messages',{
+    const res=await fetch('/api/discover',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-20250514',
-        max_tokens:1000,
-        system:`Tu es un assistant agenda concerts en Belgique. Recherche sur le web des concerts à venir en Belgique. Retourne UNIQUEMENT un tableau JSON brut sans markdown. Format: [{"date":"YYYY-MM-DD","artist":"Nom","venue":"Salle","city":"Ville","genre":"Rock|Folk / Alt|Classique|Opéra"}]. Genres autorisés: Rock, Folk / Alt, Classique, Opéra.`,
-        tools:[{type:'web_search_20250305',name:'web_search'}],
-        messages:[{role:'user',content:q}]
-      })
+      body:JSON.stringify({query:q})
     });
-    if(!res.ok) throw new Error('API Anthropic: '+res.status);
+    if(!res.ok) throw new Error('Erreur serveur: '+res.status);
     const data=await res.json();
-    const raw=(data.content||[]).filter(b=>b.type==='text').map(b=>b.text).join('');
-    const m=raw.match(/\[[\s\S]*?\]/);
-    if(!m) throw new Error('Pas de JSON dans la réponse.');
-    const parsed=JSON.parse(m[0]);
+    if(data.error) throw new Error(data.error);
+    const parsed=data.concerts||[];
     const added=merge(parsed);
     await saveData();
     render();
