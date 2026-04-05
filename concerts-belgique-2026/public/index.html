@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Agenda Concerts — Belgique 2026</title>
+<title>Agenda Concerts — Belgique</title>
 <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root {
@@ -155,7 +155,7 @@ main{padding:0 2.5rem 4rem}
 <header>
   <div>
     <div class="logo-title">Agenda <em>Concerts</em></div>
-    <div class="logo-sub">Belgique &nbsp;·&nbsp; 2026</div>
+    <div class="logo-sub">Belgique</div>
   </div>
   <div class="header-right">
     <button class="btn btn-excel" onclick="downloadExcel()">
@@ -438,7 +438,7 @@ async function discoverConcerts(){
       body:JSON.stringify({
         model:'claude-sonnet-4-20250514',
         max_tokens:1000,
-        system:`Tu es un assistant agenda concerts en Belgique. Recherche sur le web des concerts à venir en Belgique en 2026. Retourne UNIQUEMENT un tableau JSON brut sans markdown. Format: [{"date":"YYYY-MM-DD","artist":"Nom","venue":"Salle","city":"Ville","genre":"Rock|Folk / Alt|Classique|Opéra"}]. Genres autorisés: Rock, Folk / Alt, Classique, Opéra. Date du jour: 2026-04-05.`,
+        system:`Tu es un assistant agenda concerts en Belgique. Recherche sur le web des concerts à venir en Belgique. Retourne UNIQUEMENT un tableau JSON brut sans markdown. Format: [{"date":"YYYY-MM-DD","artist":"Nom","venue":"Salle","city":"Ville","genre":"Rock|Folk / Alt|Classique|Opéra"}]. Genres autorisés: Rock, Folk / Alt, Classique, Opéra.`,
         tools:[{type:'web_search_20250305',name:'web_search'}],
         messages:[{role:'user',content:q}]
       })
@@ -483,5 +483,13 @@ async function resetData(){
 /* ── INIT ── */
 loadData();
 </script>
+<footer style="text-align:center;padding:2rem 2.5rem 1.5rem;border-top:1px solid var(--border);margin-top:2rem;">
+  <p style="font-size:.7rem;color:var(--text3);letter-spacing:.06em;">
+    Développé par <span style="color:var(--text2);font-weight:500;">Cédric Goudaillier</span>
+    &nbsp;·&nbsp; Propulsé par <span style="color:var(--text2);font-weight:500;">Claude AI</span>
+    &nbsp;·&nbsp; Hébergé sur <span style="color:var(--text2);font-weight:500;">Vercel</span>
+  </p>
+</footer>
+
 </body>
 </html>
