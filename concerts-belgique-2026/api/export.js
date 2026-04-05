@@ -1,7 +1,12 @@
-const { kv } = require('@vercel/kv');
+const { list } = require('@vercel/blob');
 const ExcelJS = require('exceljs');
 
-const KV_KEY = 'concerts-belgique-2026';
+async function readConcerts() {
+  const { blobs } = await list({ prefix: 'concerts-belgique-2026' });
+  if (!blobs.length) return [];
+  const res = await fetch(blobs[0].url + '?t=' + Date.now());
+  return res.json();
+}
 
 const CORS = {
   'Access-Control-Allow-Origin': '*',
@@ -22,7 +27,7 @@ module.exports = async function handler(req, res) {
   if (req.method === 'OPTIONS') return res.status(200).end();
 
   try {
-    const concerts = (await kv.get(KV_KEY)) || [];
+    const concerts = await readConcerts();
 
     const wb = new ExcelJS.Workbook();
     wb.creator = 'Agenda Concerts Belgique';
