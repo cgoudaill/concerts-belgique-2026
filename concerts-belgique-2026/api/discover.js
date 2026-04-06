@@ -80,6 +80,13 @@ module.exports = async function handler(req, res) {
     });
 
     if (!response.ok) {
+      if (response.status === 429) {
+        const retryAfter = response.headers.get('retry-after') || 30;
+        return res.status(429).json({
+          error: `Limite API atteinte. Veuillez attendre ${retryAfter} secondes avant de réessayer.`,
+          retryAfter: parseInt(retryAfter),
+        });
+      }
       const err = await response.text();
       return res.status(response.status).json({ error: err });
     }
