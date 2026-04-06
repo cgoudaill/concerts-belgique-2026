@@ -271,6 +271,7 @@ let concerts = [];
 let filter = 'all', search = '', queryIdx = 0;
 let busy = false, newIds = new Set();
 let backendOk = true;
+let cooldownTimer = null;
 
 /* ── BACKEND API ── */
 async function apiGet() {
@@ -372,7 +373,29 @@ function notify(msg, type='info'){
 }
 function hideNotif(){ document.getElementById('notif').className='notif'; }
 
-function gc(g){ return {Rock:'rock','Folk / Alt':'folk',Classique:'clas','Opéra':'oper'}[g]||'rock'; }
+function startCooldown(seconds) {
+  const btn = document.getElementById('discoverBtn');
+  const lbl = document.getElementById('btnLabel');
+  const dot = document.getElementById('dot');
+  let remaining = seconds;
+  btn.disabled = true;
+  dot.className = 'dot dot-live';
+  dot.style.background = '#EF4444';
+  const tick = () => {
+    lbl.textContent = `Disponible dans ${remaining}s…`;
+    if (remaining <= 0) {
+      clearInterval(cooldownTimer);
+      cooldownTimer = null;
+      btn.disabled = false;
+      dot.style.background = '';
+      dot.className = 'dot dot-live';
+      lbl.textContent = 'Découvrir de nouveaux concerts';
+    }
+    remaining--;
+  };
+  tick();
+  cooldownTimer = setInterval(tick, 1000);
+}
 
 /* ── RENDER ── */
 function render(){
@@ -422,30 +445,34 @@ function render(){
 
 /* ── DISCOVER ── */
 async function discoverConcerts(){
-  if(busy) return;
+  if(busy || cooldownTimer) return;
   busy=true; hideNotif();
   const btn=document.getElementById('discoverBtn');
   const dot=document.getElementById('dot');
   const lbl=document.getElementById('btnLabel');
   btn.disabled=true;
   dot.className='dot dot-spin';
-    const useVenue = (queryIdx % 3 === 0);
-    lbl.textContent = useVenue ? 'Consultation agenda salle…' : 'Recherche en cours…';
-    queryIdx++;
+  const useVenue = (queryIdx % 3 === 0);
+  lbl.textContent = useVenue ? 'Consultation agenda salle…' : 'Recherche en cours…';
+  const body = useVenue
+    ? { venueIndex: Math.floor(queryIdx / 3) }
+    : { query: SEARCH_QUERIES[queryIdx % SEARCH_QUERIES.length] };
+  queryIdx++;
   try{
-    // Alterne : 1 requête sur 3 = scraping direct d'une salle, sinon recherche web
-    const useVenue = (queryIdx % 3 === 0);
-    const body = useVenue
-      ? { venueIndex: Math.floor(queryIdx / 3) }
-      : { query: SEARCH_QUERIES[queryIdx % SEARCH_QUERIES.length] };
-
     const res=await fetch('/api/discover',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify(body)
     });
-    if(!res.ok) throw new Error('Erreur serveur: '+res.status);
     const data=await res.json();
+    if(res.status===429){
+      const wait=data.retryAfter||30;
+      notify(`Limite API atteinte — disponible dans ${wait}s.`,'error');
+      busy=false;
+      startCooldown(wait);
+      return;
+    }
+    if(!res.ok) throw new Error(data.error||'Erreur serveur: '+res.status);
     if(data.error) throw new Error(data.error);
     const parsed=data.concerts||[];
     const added=merge(parsed);
@@ -456,10 +483,9 @@ async function discoverConcerts(){
     console.error(e);
     notify('Erreur : '+e.message,'error');
   }
-  btn.disabled=false;
-  dot.className='dot dot-live';
-  lbl.textContent='Découvrir de nouveaux concerts';
   busy=false;
+  // Délai minimum de 20s entre chaque appel
+  startCooldown(20);
 }
 
 /* ── EXCEL ── */
