@@ -255,15 +255,15 @@ const SEED = [
   {date:'2026-10-18',artist:'Scorpions — 60th Anniversary Tour',venue:'TBA',city:'Belgique',genre:'Rock'},
 ];
 
-const QUERIES = [
-  'Upcoming rock concerts Belgium May June July 2026 Ancienne Belgique Trix Forest National',
-  'Folk alternative indie concerts Belgium 2026 Botanique Cirque Royal upcoming spring summer',
-  'Opera concerts Belgium 2026 La Monnaie De Munt upcoming season performances',
-  'Classical music concerts Belgium 2026 BOZAR Belgian National Orchestra Brussels Philharmonic',
-  'Rock metal festivals Belgium summer 2026 Graspop Alcatraz Rock Werchter',
-  'Folk rock concerts Belgium autumn 2026 October November touring artists agenda',
-  'Classical opera concerts Antwerp Ghent Belgium 2026 Handelsbeurs Concertgebouw',
-  'Alternative indie folk concerts Brussels Belgium September October 2026 upcoming shows',
+const SEARCH_QUERIES = [
+  'prochains concerts rock Belgique Ancienne Belgique Forest National Trix agenda',
+  'prochains concerts folk alternatif Belgique Botanique Cirque Royal Flagey agenda',
+  'prochains concerts opéra Belgique La Monnaie De Munt agenda',
+  'prochains concerts classique Belgique Bozar Belgian National Orchestra Brussels Philharmonic',
+  'festivals rock métal Belgique Graspop Alcatraz Rock Werchter prochains',
+  'concerts Liège Namur Mons Charleroi agenda prochains rock folk classique',
+  'concerts Anvers Gand Bruges Belgique agenda prochains rock alternatif',
+  'prochains concerts opéra classique Liège Namur Bruxelles agenda',
 ];
 
 /* ── STATE ── */
@@ -429,13 +429,20 @@ async function discoverConcerts(){
   const lbl=document.getElementById('btnLabel');
   btn.disabled=true;
   dot.className='dot dot-spin';
-  const q=QUERIES[queryIdx%QUERIES.length]; queryIdx++;
-  lbl.textContent='Recherche en cours…';
+    const useVenue = (queryIdx % 3 === 0);
+    lbl.textContent = useVenue ? 'Consultation agenda salle…' : 'Recherche en cours…';
+    queryIdx++;
   try{
+    // Alterne : 1 requête sur 3 = scraping direct d'une salle, sinon recherche web
+    const useVenue = (queryIdx % 3 === 0);
+    const body = useVenue
+      ? { venueIndex: Math.floor(queryIdx / 3) }
+      : { query: SEARCH_QUERIES[queryIdx % SEARCH_QUERIES.length] };
+
     const res=await fetch('/api/discover',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({query:q})
+      body:JSON.stringify(body)
     });
     if(!res.ok) throw new Error('Erreur serveur: '+res.status);
     const data=await res.json();
