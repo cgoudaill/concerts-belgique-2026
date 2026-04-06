@@ -39,11 +39,12 @@ module.exports = async function handler(req, res) {
 
     /* Columns */
     ws.columns = [
-      { header: 'Date',    key: 'date',   width: 14 },
-      { header: 'Artiste', key: 'artist', width: 48 },
-      { header: 'Salle',   key: 'venue',  width: 36 },
-      { header: 'Ville',   key: 'city',   width: 22 },
-      { header: 'Genre',   key: 'genre',  width: 16 },
+      { header: 'Date',        key: 'date',      width: 14 },
+      { header: 'Artiste',     key: 'artist',    width: 48 },
+      { header: 'Salle',       key: 'venue',     width: 36 },
+      { header: 'Ville',       key: 'city',      width: 22 },
+      { header: 'Genre',       key: 'genre',     width: 16 },
+      { header: 'Réservation', key: 'ticketUrl', width: 50 },
     ];
 
     /* Header row style */
@@ -61,13 +62,21 @@ module.exports = async function handler(req, res) {
     /* Data rows */
     concerts.forEach((c, i) => {
       const row = ws.addRow({
-        date:   c.date,
-        artist: c.artist,
-        venue:  c.venue,
-        city:   c.city,
-        genre:  c.genre,
+        date:      c.date,
+        artist:    c.artist,
+        venue:     c.venue,
+        city:      c.city,
+        genre:     c.genre,
+        ticketUrl: c.ticketUrl || '',
       });
       row.height = 18;
+
+      // Rendre ticketUrl cliquable
+      if (c.ticketUrl) {
+        const cell = row.getCell('ticketUrl');
+        cell.value = { text: 'Réserver', hyperlink: c.ticketUrl };
+        cell.font = { color: { argb: 'FF1A4D9E' }, underline: true };
+      }
 
       const fill = GENRE_FILLS[c.genre];
       if (fill) {
