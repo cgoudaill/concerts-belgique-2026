@@ -115,7 +115,7 @@ main{padding:0 2.5rem 4rem}
 }
 .concert-row{
   display:grid;
-  grid-template-columns:64px 1fr 180px 110px 90px;
+  grid-template-columns:64px 1fr 180px 110px 90px 110px;
   align-items:center;gap:12px;
   padding:.75rem 0;border-bottom:1px solid var(--border);transition:background .12s;
 }
@@ -135,17 +135,26 @@ main{padding:0 2.5rem 4rem}
 .b-folk{background:var(--folk-bg);color:var(--folk);border:1px solid var(--folk-br)}
 .b-clas{background:var(--clas-bg);color:var(--clas);border:1px solid var(--clas-br)}
 .b-oper{background:var(--oper-bg);color:var(--oper);border:1px solid var(--oper-br)}
+.ticket-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:5px;font-size:.65rem;font-weight:600;
+  letter-spacing:.03em;white-space:nowrap;text-decoration:none;
+  background:#1A4D9E;color:#fff;border:none;cursor:pointer;
+  transition:opacity .15s;
+}
+.ticket-btn:hover{opacity:.8}
+.ticket-btn svg{flex-shrink:0}
 .empty-state{text-align:center;padding:5rem 2rem;color:var(--text3)}
 .empty-title{font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:.6rem}
 
 @media(max-width:720px){
   header,.filter-bar,.status-bar,main,.notif{padding-left:1rem;padding-right:1rem}
-  .concert-row{grid-template-columns:52px 1fr 80px}
+  .concert-row{grid-template-columns:52px 1fr 90px 80px}
   .venue-name,.city-name{display:none}
   .logo-title{font-size:1.5rem}
 }
 @media(max-width:500px){
-  .concert-row{grid-template-columns:52px 1fr}
+  .concert-row{grid-template-columns:52px 1fr 80px}
   .badge{display:none}
 }
 </style>
@@ -431,12 +440,19 @@ function render(){
     const isNew=newIds.has(cId(c));
     const g=gc(c.genre);
     const bl=c.genre==='Folk / Alt'?'Folk':c.genre;
+    const ticketBtn = c.ticketUrl
+      ? `<a class="ticket-btn" href="${c.ticketUrl}" target="_blank" rel="noopener">
+           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+           Réserver
+         </a>`
+      : '';
     html+=`<div class="concert-row${isNew?' new-row':''}">
       <div><div class="date-num">${String(d.getDate()).padStart(2,'0')}</div><div class="date-mo">${MONTHSS[d.getMonth()]}</div></div>
       <div class="artist-name">${c.artist}</div>
       <div class="venue-name">${c.venue}</div>
       <div class="city-name">${c.city}</div>
       <div><span class="badge b-${g}">${bl}</span></div>
+      <div>${ticketBtn}</div>
     </div>`;
   });
   if(lastMo) html+='</div>';
