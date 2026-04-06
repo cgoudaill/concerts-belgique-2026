@@ -73,7 +73,7 @@ module.exports = async function handler(req, res) {
       body: JSON.stringify({
         model: 'claude-sonnet-4-20250514',
         max_tokens: 2000,
-        system: `Tu es un assistant agenda concerts en Belgique. Tu consultes les agendas officiels des salles de concert belges. Retourne UNIQUEMENT un tableau JSON brut sans markdown, sans texte avant ni après. Format strict: [{"date":"YYYY-MM-DD","artist":"Nom","venue":"Salle","city":"Ville","genre":"Rock|Folk / Alt|Classique|Opéra"}]. Genres autorisés exactement: Rock, Folk / Alt, Classique, Opéra. Si aucun concert trouvé, retourne [].`,
+        system: `Tu es un assistant agenda concerts en Belgique. Tu consultes les agendas officiels des salles de concert belges. Retourne UNIQUEMENT un tableau JSON brut sans markdown, sans texte avant ni après. Format strict: [{"date":"YYYY-MM-DD","artist":"Nom","venue":"Salle","city":"Ville","genre":"Rock|Folk / Alt|Classique|Opéra","ticketUrl":"https://..."}]. Genres autorisés exactement: Rock, Folk / Alt, Classique, Opéra. Pour ticketUrl, mets l'URL directe de réservation/billetterie si disponible, sinon null. Si aucun concert trouvé, retourne [].`,
         tools: [{ type: 'web_search_20250305', name: 'web_search' }],
         messages: [{ role: 'user', content: userMessage }],
       }),
