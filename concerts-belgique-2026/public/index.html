@@ -407,6 +407,8 @@ function startCooldown(seconds) {
 }
 
 /* ── RENDER ── */
+function gc(g){ return {Rock:'rock','Folk / Alt':'folk',Classique:'clas','Opéra':'oper'}[g]||'rock'; }
+
 function render(){
   const list = concerts.filter(c=>{
     if(filter!=='all'&&c.genre!==filter) return false;
