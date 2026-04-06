@@ -13,7 +13,585 @@
   --accent:#C4342A;
   --rock:#B53028;   --rock-bg:#FEF2F1;  --rock-br:#F5C0BC;
   --folk:#286B48;   --folk-bg:#F0FAF4;  --folk-br:#A0D9BC;
+  --clas:#1A4D9E;   --clas-bg:#EEF4FD;  --clas-br:#B3CBEF;<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Agenda Concerts — Belgique</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;1,500&family=Sora:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg:#F9F7F3; --bg2:#EFECE6; --bg3:#E3DDD5;
+  --text:#1A1714; --text2:#6A6460; --text3:#A09890;
+  --border:rgba(26,23,20,0.1);
+  --accent:#C4342A;
+  --rock:#B53028;   --rock-bg:#FEF2F1;  --rock-br:#F5C0BC;
+  --folk:#286B48;   --folk-bg:#F0FAF4;  --folk-br:#A0D9BC;
   --clas:#1A4D9E;   --clas-bg:#EEF4FD;  --clas-br:#B3CBEF;
+  --oper:#7B3096;   --oper-bg:#F7F0FC;  --oper-br:#D4AFDF;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Sora',sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+
+/* ── HEADER ── */
+header{
+  padding:1.5rem 2.5rem 1.2rem;border-bottom:1px solid var(--border);
+  display:flex;align-items:flex-end;justify-content:space-between;
+  flex-wrap:wrap;gap:1rem;background:var(--bg);
+}
+.logo-title{
+  font-family:'Playfair Display',serif;font-size:2rem;
+  font-weight:700;letter-spacing:-0.02em;color:var(--text);
+}
+.logo-title em{font-style:italic;color:var(--accent)}
+.logo-sub{font-size:.65rem;font-weight:500;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--text3);margin-top:4px}
+.header-right{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+
+.btn{
+  display:inline-flex;align-items:center;gap:8px;padding:9px 16px;
+  border-radius:6px;cursor:pointer;font-family:'Sora',sans-serif;
+  font-size:.78rem;font-weight:500;letter-spacing:.02em;
+  transition:opacity .15s,transform .1s;white-space:nowrap;border:none;
+}
+.btn:hover:not(:disabled){opacity:.82}
+.btn:active:not(:disabled){transform:scale(.97)}
+.btn:disabled{opacity:.35;cursor:not-allowed}
+.btn-primary{background:var(--text);color:var(--bg)}
+.btn-outline{background:transparent;color:var(--text2);border:1px solid var(--border)}
+.btn-outline:hover:not(:disabled){background:var(--bg2)}
+.btn-excel{background:#1D6F42;color:#fff}
+
+.dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.dot-live{background:#22C55E;animation:pulse-dot 1.6s ease-in-out infinite}
+.dot-spin{border:2px solid rgba(255,255,255,.3);border-top-color:#fff;
+  border-radius:50%;width:13px;height:13px;animation:spin .7s linear infinite}
+@keyframes pulse-dot{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ── NOTIFICATION ── */
+.notif{display:none;align-items:center;gap:10px;padding:.6rem 2.5rem;
+  font-size:.78rem;border-bottom:1px solid var(--border)}
+.notif.show{display:flex}
+.notif-success{background:#F0FDF4;color:#166534}
+.notif-error  {background:#FEF2F2;color:#991B1B}
+.notif-info   {background:#EFF6FF;color:#1E40AF}
+.notif-close{margin-left:auto;cursor:pointer;opacity:.6;font-size:1rem;
+  line-height:1;background:none;border:none;color:inherit}
+
+/* ── FILTER BAR ── */
+.filter-bar{
+  padding:.9rem 2.5rem;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+  border-bottom:1px solid var(--border);background:var(--bg);
+}
+.pills{display:flex;gap:6px;flex-wrap:wrap}
+.pill{
+  padding:5px 14px;border-radius:999px;cursor:pointer;
+  font-family:'Sora',sans-serif;font-size:.72rem;font-weight:500;
+  border:1px solid var(--border);background:transparent;color:var(--text2);
+  transition:all .15s;white-space:nowrap;
+}
+.pill:hover{background:var(--bg2)}
+.pill.f-all {background:var(--text);color:var(--bg);border-color:var(--text)}
+.pill.f-rock{background:var(--rock-bg);color:var(--rock);border-color:var(--rock-br)}
+.pill.f-folk{background:var(--folk-bg);color:var(--folk);border-color:var(--folk-br)}
+.pill.f-clas{background:var(--clas-bg);color:var(--clas);border-color:var(--clas-br)}
+.pill.f-oper{background:var(--oper-bg);color:var(--oper);border-color:var(--oper-br)}
+.search-wrap{flex:1;min-width:160px;position:relative}
+.search-wrap svg{position:absolute;left:10px;top:50%;transform:translateY(-50%);
+  color:var(--text3);pointer-events:none}
+.search-input{
+  width:100%;padding:7px 12px 7px 32px;border:1px solid var(--border);
+  border-radius:6px;background:white;color:var(--text);
+  font-family:'Sora',sans-serif;font-size:.8rem;outline:none;transition:border-color .15s;
+}
+.search-input:focus{border-color:var(--text2)}
+
+/* ── STATUS ── */
+.status-bar{
+  padding:.55rem 2.5rem;display:flex;align-items:center;
+  justify-content:space-between;flex-wrap:wrap;gap:.5rem;
+  background:var(--bg2);border-bottom:1px solid var(--border);
+  font-size:.72rem;color:var(--text2);
+}
+.count-badge{font-weight:600;color:var(--text)}
+.sync-ok {color:#22C55E;font-size:.7rem}
+.sync-err{color:#EF4444;font-size:.7rem}
+
+/* ── LIST ── */
+main{padding:0 2.5rem 4rem}
+.month-section{margin-top:2rem}
+.month-label{
+  font-size:.62rem;font-weight:600;letter-spacing:.16em;
+  text-transform:uppercase;color:var(--text3);
+  padding:.5rem 0;border-bottom:1px solid var(--border);margin-bottom:.2rem;
+}
+.concert-row{
+  display:grid;
+  grid-template-columns:64px 1fr 180px 110px 90px 110px;
+  align-items:center;gap:12px;
+  padding:.75rem 0;border-bottom:1px solid var(--border);transition:background .12s;
+}
+.concert-row:hover{background:white;padding-left:10px;padding-right:10px;margin:0 -10px}
+.concert-row.new-row{animation:glow-in 3.5s ease-out forwards}
+@keyframes glow-in{0%,60%{background:#FFFDE7}100%{background:transparent}}
+.date-num{font-size:1.1rem;font-weight:600;line-height:1;color:var(--text)}
+.date-mo {font-size:.7rem;color:var(--text3)}
+.artist-name{font-size:.88rem;font-weight:500}
+.venue-name,.city-name{font-size:.75rem;color:var(--text2)}
+.badge{
+  display:inline-block;padding:3px 9px;border-radius:4px;
+  font-size:.62rem;font-weight:600;letter-spacing:.04em;
+  text-transform:uppercase;white-space:nowrap;
+}
+.b-rock{background:var(--rock-bg);color:var(--rock);border:1px solid var(--rock-br)}
+.b-folk{background:var(--folk-bg);color:var(--folk);border:1px solid var(--folk-br)}
+.b-clas{background:var(--clas-bg);color:var(--clas);border:1px solid var(--clas-br)}
+.b-oper{background:var(--oper-bg);color:var(--oper);border:1px solid var(--oper-br)}
+.ticket-btn{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:4px 10px;border-radius:5px;font-size:.65rem;font-weight:600;
+  letter-spacing:.03em;white-space:nowrap;text-decoration:none;
+  background:#1A4D9E;color:#fff;border:none;cursor:pointer;
+  transition:opacity .15s;
+}
+.ticket-btn:hover{opacity:.8}
+.ticket-btn svg{flex-shrink:0}
+.empty-state{text-align:center;padding:5rem 2rem;color:var(--text3)}
+.empty-title{font-family:'Playfair Display',serif;font-size:1.3rem;margin-bottom:.6rem}
+
+@media(max-width:720px){
+  header,.filter-bar,.status-bar,main,.notif{padding-left:1rem;padding-right:1rem}
+  .concert-row{grid-template-columns:52px 1fr 90px 80px}
+  .venue-name,.city-name{display:none}
+  .logo-title{font-size:1.5rem}
+}
+@media(max-width:500px){
+  .concert-row{grid-template-columns:52px 1fr 80px}
+  .badge{display:none}
+}
+</style>
+</head>
+<body>
+
+<header>
+  <div>
+    <div class="logo-title">Agenda <em>Concerts</em></div>
+    <div class="logo-sub">Belgique</div>
+  </div>
+  <div class="header-right">
+    <button class="btn btn-excel" onclick="downloadExcel()">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+      Excel
+    </button>
+    <button class="btn btn-outline" onclick="resetData()">Réinitialiser</button>
+    <button class="btn btn-primary" id="discoverBtn" onclick="discoverConcerts()">
+      <span class="dot dot-live" id="dot"></span>
+      <span id="btnLabel">Découvrir de nouveaux concerts</span>
+    </button>
+  </div>
+</header>
+
+<div class="notif" id="notif">
+  <span id="notifText"></span>
+  <button class="notif-close" onclick="hideNotif()">✕</button>
+</div>
+
+<div class="filter-bar">
+  <div class="pills">
+    <button class="pill f-all"  id="pill-all"       onclick="setFilter('all')">Tous les genres</button>
+    <button class="pill"        id="pill-rock"      onclick="setFilter('Rock')">Rock</button>
+    <button class="pill"        id="pill-folk"      onclick="setFilter('Folk / Alt')">Folk &amp; Alternatif</button>
+    <button class="pill"        id="pill-classique" onclick="setFilter('Classique')">Classique</button>
+    <button class="pill"        id="pill-opera"     onclick="setFilter('Opéra')">Opéra</button>
+  </div>
+  <div class="search-wrap">
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input class="search-input" type="text" placeholder="Artiste, lieu, ville…" oninput="setSearch(this.value)">
+  </div>
+</div>
+
+<div class="status-bar">
+  <div id="statusText">Chargement…</div>
+  <div id="syncStatus"></div>
+</div>
+
+<main id="main"></main>
+
+<script>
+/* ── CONSTANTS ──────────────────────────────────────── */
+const MONTHS  = ['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+const MONTHSS = ['Jan','Fév','Mars','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Déc'];
+
+const SEED = [
+  {date:'2026-01-14',artist:'Slaughter To Prevail',venue:'Ancienne Belgique',city:'Bruxelles',genre:'Rock'},
+  {date:'2026-01-18',artist:'Amaranthe + Epica – Arcane Dimensions Tour',venue:'Forest National',city:'Bruxelles',genre:'Rock'},
+  {date:'2026-01-19',artist:'Bootleg Beatles',venue:'Cirque Royal',city:'Bruxelles',genre:'Rock'},
+  {date:'2026-02-14',artist:'Blonde Redhead',venue:'Ancienne Belgique (AB)',city:'Bruxelles',genre:'Folk / Alt'},
+  {date:'2026-02-16',artist:'Yann Tiersen',venue:'Ancienne Belgique (AB)',city:'Bruxelles',genre:'Folk / Alt'},
+  {date:'2026-03-10',artist:'Opéra — saison La Monnaie',venue:'Théâtre de la Monnaie',city:'Bruxelles',genre:'Opéra'},
+  {date:'2026-03-15',artist:'Phalaena — musique de chambre',venue:'Musée des Instruments de Musique',city:'Bruxelles',genre:'Classique'},
+  {date:'2026-03-15',artist:'The Good, the Bad, Me and Morricone',venue:'Théâtre Royal',city:'Mons',genre:'Classique'},
+  {date:'2026-03-17',artist:'The Divine Comedy',venue:'Cirque Royal',city:'Bruxelles',genre:'Folk / Alt'},
+  {date:'2026-03-18',artist:'Cardinals',venue:'Ancienne Belgique (AB)',city:'Bruxelles',genre:'Folk / Alt'},
+  {date:'2026-03-19',artist:'Hans Zimmer Live — The Next Level',venue:'AFAS Dome',city:'Anvers',genre:'Classique'},
+  {date:'2026-03-21',artist:'Tyler Ramsey + Laura Cortese',venue:'Botanique',city:'Bruxelles',genre:'Folk / Alt'},
+  {date:'2026-03-25',artist:'Kreator',venue:'Ancienne Belgique',city:'Bruxelles',genre:'Rock'},
+  {date:'2026-03-26',artist:'Concert — Orchestre Symphonique de la Monnaie',venue:'Théâtre de la Monnaie',city:'Bruxelles',genre:'Classique'},
+  {date:'2026-03-26',artist:'Clair Obscur: Expedition 33 — A Painted Symphony',venue:'Cirque Royal',city:'Bruxelles',genre:'Classique'},
+  {date:'2026-03-27',artist:'Andrea Bocelli',venue:'AFAS Dome',city:'Anvers',genre:'Opéra'},
+  {date:'2026-03-29',artist:'Airbourne — Gutsy Tour',venue:'Ancienne Belgique',city:'Bruxelles',genre:'Rock'},
+  {date:'2026-04-01',artist:'Brussels Philharmonic — Concert Kids',venue:'Flagey',city:'Bruxelles',genre:'Classique'},
+  {date:'2026-04-03',artist:'Franz Ferdinand',venue:'Forest National',city:'Bruxelles',genre:'Rock'},
+  {date:'2026-04-11',artist:'Tribute to Morricone — Nox Orchestra',venue:'Collégiale Sainte-Waudru',city:'Mons',genre:'Classique'},
+  {date:'2026-04-12',artist:'Peteris Vasks Quartet',venue:'Musée des Instruments de Musique',city:'Bruxelles',genre:'Classique'},
+  {date:'2026-04-12',artist:'Concert — La Monnaie',venue:'Théâtre de la Monnaie',city:'Bruxelles',genre:'Classique'},
+  {date:'2026-04-15',artist:'Brussels Philharmonic — Bucket List Family',venue:'Concertgebouw',city:'Bruges',genre:'Classique'},
+  {date:'2026-04-17',artist:'Durbuy Rock Festival',venue:'Durbuy',city:'Durbuy',genre:'Rock'},
+  {date:'2026-04-20',artist:'Magistrale Mahler 5 — Of Love and Light',venue:'Handelsbeurs',city:'Anvers',genre:'Classique'},
+  {date:'2026-04-21',artist:'Common Ground — Classical meets Jazz',venue:'Handelsbeurs',city:'Anvers',genre:'Classique'},
+  {date:'2026-04-23',artist:'Queen — The Unique Rock Symphony',venue:'Stadsschouwburg',city:'Anvers',genre:'Rock'},
+  {date:'2026-04-24',artist:'Queen — The Unique Rock Symphony',venue:'Capitole Gent',city:'Gand',genre:'Rock'},
+  {date:'2026-04-29',artist:'Triggerfinger',venue:'TBA',city:'Belgique',genre:'Rock'},
+  {date:'2026-05-01',artist:'Roots & Roses Festival',venue:'Lessines',city:'Lessines',genre:'Folk / Alt'},
+  {date:'2026-05-05',artist:'Opéra — La Monnaie',venue:'Théâtre de la Monnaie',city:'Bruxelles',genre:'Opéra'},
+  {date:'2026-05-06',artist:'Concert du Conservatoire Royal',venue:'Conservatoire Royal de Bruxelles',city:'Bruxelles',genre:'Classique'},
+  {date:'2026-05-08',artist:'Concert Classique — KBR',venue:'Bibliothèque Royale de Belgique',city:'Bruxelles',genre:'Classique'},
+  {date:'2026-05-14',artist:'Nuits Botanique — folk / indie / alt',venue:'Botanique',city:'Bruxelles',genre:'Folk / Alt'},
+  {date:'2026-05-15',artist:'Opéra / Événement — La Monnaie',venue:'Théâtre de la Monnaie',city:'Bruxelles',genre:'Opéra'},
+  {date:'2026-06-17',artist:'Opéra — La Monnaie (fin de saison)',venue:'Théâtre de la Monnaie',city:'Bruxelles',genre:'Opéra'},
+  {date:'2026-06-18',artist:'Graspop Metal Meeting',venue:'Dessel',city:'Dessel',genre:'Rock'},
+  {date:'2026-06-26',artist:"Couleur Café",venue:"Parc d'Osseghem",city:'Bruxelles',genre:'Folk / Alt'},
+  {date:'2026-06-27',artist:'Live is Live — Robbie Williams, Sugababes…',venue:'Middenvijver Park',city:'Anvers',genre:'Rock'},
+  {date:'2026-07-02',artist:'Rock Werchter — The Cure, Gorillaz, FKA Twigs…',venue:'Festival Park Werchter',city:'Werchter',genre:'Rock'},
+  {date:'2026-07-02',artist:'Les Ardentes Festival',venue:'Liège',city:'Liège',genre:'Rock'},
+  {date:'2026-07-11',artist:'Gent Jazz Festival — John Legend, Patti Smith Quartet',venue:'Festival Park',city:'Gand',genre:'Folk / Alt'},
+  {date:'2026-07-15',artist:'Dour Festival — Orelsan, Amenra, Damso…',venue:'Dour',city:'Dour',genre:'Rock'},
+  {date:'2026-07-20',artist:'Francofolies de Spa',venue:'Spa',city:'Spa',genre:'Folk / Alt'},
+  {date:'2026-07-29',artist:'Opéra en concert — La Monnaie',venue:'Théâtre de la Monnaie',city:'Bruxelles',genre:'Opéra'},
+  {date:'2026-07-31',artist:"Esperanzah! Festival — world / folk",venue:'Floreffe',city:'Floreffe',genre:'Folk / Alt'},
+  {date:'2026-08-06',artist:'Alcatraz Metal Festival',venue:'Dessel',city:'Dessel',genre:'Rock'},
+  {date:'2026-08-07',artist:'BrakRock Ecofest — punk / alt',venue:'Château Ter Elst',city:'Duffel',genre:'Rock'},
+  {date:'2026-10-05',artist:'Simple Plan — Bigger Than You Think Tour',venue:'TBA',city:'Belgique',genre:'Rock'},
+  {date:'2026-10-15',artist:'Amon Amarth — The Allfather Awakens',venue:'TBA',city:'Belgique',genre:'Rock'},
+  {date:'2026-10-18',artist:'Scorpions — 60th Anniversary Tour',venue:'TBA',city:'Belgique',genre:'Rock'},
+];
+
+const SEARCH_QUERIES = [
+  'prochains concerts rock Belgique Ancienne Belgique Forest National Trix agenda',
+  'prochains concerts folk alternatif Belgique Botanique Cirque Royal Flagey agenda',
+  'prochains concerts opéra Belgique La Monnaie De Munt agenda',
+  'prochains concerts classique Belgique Bozar Belgian National Orchestra Brussels Philharmonic',
+  'festivals rock métal Belgique Graspop Alcatraz Rock Werchter prochains',
+  'concerts Liège Namur Mons Charleroi agenda prochains rock folk classique',
+  'concerts Anvers Gand Bruges Belgique agenda prochains rock alternatif',
+  'prochains concerts opéra classique Liège Namur Bruxelles agenda',
+];
+
+/* ── STATE ── */
+let concerts = [];
+let filter = 'all', search = '', queryIdx = 0;
+let busy = false, newIds = new Set();
+let backendOk = true;
+let cooldownTimer = null;
+
+/* ── BACKEND API ── */
+async function apiGet() {
+  const r = await fetch('/api/concerts');
+  if (!r.ok) throw new Error('GET ' + r.status);
+  return r.json();
+}
+async function apiPost(data) {
+  const r = await fetch('/api/concerts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ concerts: data }),
+  });
+  if (!r.ok) throw new Error('POST ' + r.status);
+  return r.json();
+}
+
+/* ── LOAD ── */
+async function loadData() {
+  try {
+    const data = await apiGet();
+    if (data && data.length) {
+      concerts = data;
+    } else {
+      concerts = [...SEED];
+      await apiPost(concerts); // initialise the backend
+    }
+    backendOk = true;
+    setSyncStatus('ok');
+  } catch(e) {
+    concerts = [...SEED];
+    backendOk = false;
+    setSyncStatus('err');
+    notify('Backend non disponible — données locales. Vérifiez la configuration Vercel KV.', 'error');
+  }
+  render();
+  stamp();
+}
+
+async function saveData() {
+  if (!backendOk) return;
+  try {
+    await apiPost(concerts);
+    setSyncStatus('ok');
+  } catch(e) {
+    setSyncStatus('err');
+    console.error('Save error:', e);
+  }
+}
+
+function setSyncStatus(s) {
+  const el = document.getElementById('syncStatus');
+  if (s === 'ok') {
+    el.innerHTML = '<span class="sync-ok">● Synchronisé</span>';
+  } else {
+    el.innerHTML = '<span class="sync-err">● Hors ligne</span>';
+  }
+}
+
+/* ── MERGE ── */
+function merge(incoming) {
+  const ex = new Set(concerts.map(cId));
+  let n = 0; newIds = new Set();
+  const valid = ['Rock','Folk / Alt','Classique','Opéra'];
+  incoming.forEach(c => {
+    if (!c.date||!c.artist||!c.genre||!valid.includes(c.genre)) return;
+    if (!/^\d{4}-\d{2}-\d{2}$/.test(c.date)) return;
+    const id = cId(c);
+    if (!ex.has(id)) { concerts.push(c); newIds.add(id); n++; }
+  });
+  concerts.sort((a,b) => a.date.localeCompare(b.date));
+  return n;
+}
+
+function cId(c) { return c.date+'|'+c.artist.toLowerCase().replace(/\s+/g,'').slice(0,20); }
+
+/* ── UI HELPERS ── */
+function setFilter(f) {
+  filter = f;
+  const cls = {all:'f-all',Rock:'f-rock','Folk / Alt':'f-folk',Classique:'f-clas','Opéra':'f-oper'};
+  const ids = {all:'pill-all',Rock:'pill-rock','Folk / Alt':'pill-folk',Classique:'pill-classique','Opéra':'pill-opera'};
+  document.querySelectorAll('.pill').forEach(p => p.className='pill');
+  const el = document.getElementById(ids[f]);
+  if (el) el.className = 'pill '+(cls[f]||'');
+  render();
+}
+
+function setSearch(v){ search=v.toLowerCase(); render(); }
+
+function stamp(){
+  document.getElementById('statusText').innerHTML =
+    '<span class="count-badge">'+concerts.length+'</span> concerts au total';
+}
+
+function notify(msg, type='info'){
+  const n=document.getElementById('notif');
+  n.className='notif show notif-'+type;
+  document.getElementById('notifText').textContent=msg;
+}
+function hideNotif(){ document.getElementById('notif').className='notif'; }
+
+function startCooldown(seconds) {
+  const btn = document.getElementById('discoverBtn');
+  const lbl = document.getElementById('btnLabel');
+  const dot = document.getElementById('dot');
+  let remaining = seconds;
+  btn.disabled = true;
+  dot.className = 'dot dot-live';
+  dot.style.background = '#EF4444';
+  const tick = () => {
+    lbl.textContent = `Disponible dans ${remaining}s…`;
+    if (remaining <= 0) {
+      clearInterval(cooldownTimer);
+      cooldownTimer = null;
+      btn.disabled = false;
+      dot.style.background = '';
+      dot.className = 'dot dot-live';
+      lbl.textContent = 'Découvrir de nouveaux concerts';
+    }
+    remaining--;
+  };
+  tick();
+  cooldownTimer = setInterval(tick, 1000);
+}
+
+/* ── RENDER ── */
+function gc(g){ return {Rock:'rock','Folk / Alt':'folk',Classique:'clas','Opéra':'oper'}[g]||'rock'; }
+
+const VENUE_LINKS = {
+  'ancienne belgique':          'https://www.abconcerts.be/fr/agenda',
+  'forest national':            'https://www.forest-national.be/calendrier',
+  'cirque royal':               'https://www.cirque-royal-bruxelles.be/agenda',
+  'bozar':                      'https://www.bozar.be/fr/agenda',
+  'botanique':                  'https://www.botanique.be/fr/concerts',
+  'flagey':                     'https://www.flagey.be/fr/agenda',
+  'la monnaie':                 'https://www.lamonnaiedemunt.be/fr/agenda',
+  'de munt':                    'https://www.lamonnaiedemunt.be/fr/agenda',
+  'théâtre de la monnaie':      'https://www.lamonnaiedemunt.be/fr/agenda',
+  'opéra royal de wallonie':    'https://www.operaliege.be/agenda',
+  'salle philharmonique':       'https://www.oprl.be/fr/concerts',
+  'grand manège':               'https://grandmanege.be/fr/agenda',
+  'rockerill':                  'https://www.rockerill.com/agenda',
+  'afas dome':                  'https://www.ticketmaster.be',
+  'trix':                       'https://www.trixonline.be/agenda',
+  'de roma':                    'https://www.deroma.be/agenda',
+  'handelsbeurs':               'https://www.handelsbeurs.be/agenda',
+  'concertgebouw':              'https://www.concertgebouw.be/nl/agenda',
+  'volta':                      'https://volta.brussels/agenda',
+  'la zone':                    'https://www.lazone.be/agenda',
+  'muziek publique':            'https://www.muziekpublique.be/agenda',
+  'le brass':                   'https://www.lebrass.be/agenda',
+  'forum':                      'https://www.leforumliege.be/agenda',
+  'festivalpark werchter':      'https://www.rockwerchter.be',
+  'festivalpark stenehei':      'https://www.graspop.be',
+};
+
+function getVenueLink(venue) {
+  if (!venue) return null;
+  const v = venue.toLowerCase();
+  for (const [key, url] of Object.entries(VENUE_LINKS)) {
+    if (v.includes(key)) return url;
+  }
+  return null;
+}
+
+function render(){
+  const list = concerts.filter(c=>{
+    if(filter!=='all'&&c.genre!==filter) return false;
+    if(search){
+      const h=(c.artist+'|'+c.venue+'|'+c.city+'|'+c.genre).toLowerCase();
+      if(!h.includes(search)) return false;
+    }
+    return true;
+  });
+
+  document.getElementById('statusText').innerHTML =
+    '<span class="count-badge">'+list.length+'</span> concert'+(list.length!==1?'s':'')+
+    ' affiché'+(list.length!==1?'s':'')+
+    ' &nbsp;·&nbsp; <span style="color:var(--text3)">'+concerts.length+' au total</span>';
+
+  const main=document.getElementById('main');
+  if(!list.length){
+    main.innerHTML='<div class="empty-state"><div class="empty-title">Aucun résultat</div><p style="font-size:.8rem;margin-top:.5rem">Essayez un autre filtre ou cliquez sur « Découvrir ».</p></div>';
+    return;
+  }
+
+  let html='',lastMo='';
+  list.forEach(c=>{
+    const d=new Date(c.date+'T00:00:00');
+    const mo=c.date.slice(0,7);
+    if(mo!==lastMo){
+      if(lastMo) html+='</div>';
+      lastMo=mo;
+      html+='<div class="month-section"><div class="month-label">'+MONTHS[d.getMonth()]+' '+d.getFullYear()+'</div>';
+    }
+    const isNew=newIds.has(cId(c));
+    const g=gc(c.genre);
+    const bl=c.genre==='Folk / Alt'?'Folk':c.genre;
+    const idx = concerts.indexOf(c);
+    const resolvedUrl = c.ticketUrl || getVenueLink(c.venue);
+    const ticketBtn = resolvedUrl
+      ? `<a class="ticket-btn" href="${resolvedUrl}" target="_blank" rel="noopener">
+           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+           Réserver
+         </a>`
+      : '';
+    const editBtn = '';
+
+    html+=`<div class="concert-row${isNew?' new-row':''}">
+      <div><div class="date-num">${String(d.getDate()).padStart(2,'0')}</div><div class="date-mo">${MONTHSS[d.getMonth()]}</div></div>
+      <div class="artist-name">${c.artist}</div>
+      <div class="venue-name">${c.venue}</div>
+      <div class="city-name">${c.city}</div>
+      <div><span class="badge b-${g}">${bl}</span></div>
+      <div style="display:flex;align-items:center;gap:6px;">${ticketBtn}${editBtn}</div>
+    </div>`;
+  });
+  if(lastMo) html+='</div>';
+  main.innerHTML=html;
+}
+
+/* ── DISCOVER ── */
+async function discoverConcerts(){
+  if(busy || cooldownTimer) return;
+  busy=true; hideNotif();
+  const btn=document.getElementById('discoverBtn');
+  const dot=document.getElementById('dot');
+  const lbl=document.getElementById('btnLabel');
+  btn.disabled=true;
+  dot.className='dot dot-spin';
+  const useVenue = (queryIdx % 3 === 0);
+  lbl.textContent = useVenue ? 'Consultation agenda salle…' : 'Recherche en cours…';
+  const body = useVenue
+    ? { venueIndex: Math.floor(queryIdx / 3) }
+    : { query: SEARCH_QUERIES[queryIdx % SEARCH_QUERIES.length] };
+  queryIdx++;
+  try{
+    const res=await fetch('/api/discover',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify(body)
+    });
+    const data=await res.json();
+    if(res.status===429){
+      const wait=data.retryAfter||30;
+      notify(`Limite API atteinte — disponible dans ${wait}s.`,'error');
+      busy=false;
+      startCooldown(wait);
+      return;
+    }
+    if(!res.ok) throw new Error(data.error||'Erreur serveur: '+res.status);
+    if(data.error) throw new Error(data.error);
+    const parsed=data.concerts||[];
+    const added=merge(parsed);
+    await saveData();
+    render();
+    notify(added>0?`✓ ${added} nouveau${added>1?'x':''} concert${added>1?'s':''} ajouté${added>1?'s':''} !`:'Aucun nouveau concert cette fois. Recliquez pour changer de requête.', added>0?'success':'info');
+  }catch(e){
+    console.error(e);
+    notify('Erreur : '+e.message,'error');
+  }
+  busy=false;
+  // Délai minimum de 20s entre chaque appel
+  startCooldown(20);
+}
+
+/* ── EXCEL ── */
+function downloadExcel(){
+  window.location.href='/api/export';
+}
+
+/* ── RESET ── */
+async function resetData(){
+  if(!confirm('Réinitialiser la liste aux données de départ ?')) return;
+  concerts=[...SEED];
+  newIds=new Set();
+  queryIdx=0;
+  await saveData();
+  render();
+  stamp();
+  notify('Liste réinitialisée.','info');
+}
+
+/* ── INIT ── */
+loadData();
+</script>
+<footer style="text-align:center;padding:2rem 2.5rem 1.5rem;border-top:1px solid var(--border);margin-top:2rem;">
+  <p style="font-size:.7rem;color:var(--text3);letter-spacing:.06em;">
+    Développé par <span style="color:var(--text2);font-weight:500;">Cédric Goudaillier</span>
+    &nbsp;·&nbsp; Propulsé par <span style="color:var(--text2);font-weight:500;">Claude AI</span>
+    &nbsp;·&nbsp; Hébergé sur <span style="color:var(--text2);font-weight:500;">Vercel</span>
+  </p>
+</footer>
+
+</body>
+</html>
   --oper:#7B3096;   --oper-bg:#F7F0FC;  --oper-br:#D4AFDF;
 }
 *{box-sizing:border-box;margin:0;padding:0}
